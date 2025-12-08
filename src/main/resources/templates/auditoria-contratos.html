@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Auditoría de Cumplimiento Legal</title>
+</head>
+<body>
+<h1>📋 Auditoría de Contratos (Cumplimiento Click-Wrap)</h1>
+
+<p>Mostrando contratos que aceptaron la **Versión de Términos:** <strong th:text="${version}"></strong></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID Contrato</th>
+        <th>Fecha de Firma</th>
+        <th>ID Cliente (Campo Cifrado)</th>
+        <th>Vehículo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="contrato : ${contratos}">
+        <td th:text="${contrato.id}"></td>
+        <td th:text="${contrato.fechaCelebracion}"></td>
+        <td th:text="${contrato.cliente.identificacion}"></td>
+        <td th:text="|${contrato.vehiculo.marca} ${contrato.vehiculo.modelo}|"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>Total de Contratos Auditados: <strong th:text="${#lists.size(contratos)}"></strong></p>
+
+<p style="color: red;">Esta vista es una herramienta interna para la auditoría, comprobando que el registro del acuerdo legal es correcto.</p>
+</body>
+</html>

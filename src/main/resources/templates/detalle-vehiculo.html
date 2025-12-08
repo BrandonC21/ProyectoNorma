@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|Detalle - ${vehiculo.marca} ${vehiculo.modelo}|">Detalle Vehículo</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 900px;
+            padding: 35px 40px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        a.volver {
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a.volver:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-top: 0;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            color: #333;
+        }
+
+        .visualizacion {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .visualizacion img {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+
+        .detalle-principal {
+            background-color: #eef7ff;
+            padding: 20px;
+            border-left: 4px solid #007bff;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .detalle-principal h2,
+        .detalle-principal h3 {
+            margin: 8px 0;
+            color: #333;
+        }
+
+        .financiamiento {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+        }
+
+        .financiamiento h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .btn-financiar {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 14px 22px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color .3s ease;
+        }
+
+        .btn-financiar:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <a th:href="@{/}" class="volver">← Volver al Catálogo</a>
+
+    <h1 th:text="|${vehiculo.marca} ${vehiculo.modelo} ${vehiculo.anioFabricacion}|"></h1>
+
+    <section class="visualizacion">
+        <img th:if="${vehiculo.urlImagen}"
+             th:src="@{'/uploads/' + ${vehiculo.urlImagen}}"
+             alt="Foto del Vehículo">
+
+        <p th:unless="${vehiculo.urlImagen}">Imagen no disponible.</p>
+    </section>
+
+    <section class="detalle-principal">
+        <h2>
+            Precio:
+            $<span th:text="${#numbers.formatDecimal(vehiculo.precio, 1, 2)}"></span>
+        </h2>
+
+        <h3>
+            Motor:
+            <span th:text="${vehiculo.motor}"></span>
+            &nbsp; | &nbsp;
+            Kilometraje:
+            <span th:text="${#numbers.formatInteger(vehiculo.kilometraje, 1, 'COMMA')}"></span> km
+        </h3>
+        <h3>
+            Version:
+            <span th:text="${vehiculo.version}"></span>
+            &nbsp; | &nbsp;
+            Transmicíon:
+            <span th:text="${vehiculo.transmicion}"></span>
+        </h3>
+    </section>
+
+    <section class="financiamiento">
+        <h3>Proceso de Compra y Financiamiento</h3>
+        <p>Inicie el proceso para ingresar sus datos y generar el contrato legal correspondiente.</p>
+
+        <a th:href="@{/solicitud/{id}(id=${vehiculo.id})}" class="btn-financiar">
+            Proceder a la Solicitud de Crédito (LDPP)
+        </a>
+    </section>
+
+</div>
+</body>
+</html>

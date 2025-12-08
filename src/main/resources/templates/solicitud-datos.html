@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitud de Financiamiento - LDPP</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 35px 40px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.9em;
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1em;
+            color: #555;
+            background: #eef7ff;
+            padding: 12px 15px;
+            border-left: 4px solid #007bff;
+            border-radius: 6px;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background-color: #fafafa;
+        }
+
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+            font-size: 1.1em;
+            color: #007bff;
+        }
+
+        /* Grid de inputs */
+        fieldset label {
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+            outline: none;
+        }
+
+        .consentimiento-legal {
+            background-color: #fff8e1;
+            border-color: #ffd54f;
+        }
+
+        #acepto-ldpp {
+            transform: scale(1.2);
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+    <h1>Datos Del Cliente y Solicitud de Crédito</h1>
+
+    <p>
+        Sus datos serán <strong>cifrados</strong> y protegidos conforme a la LDPP antes de ser almacenados.
+    </p>
+
+    <form th:action="@{/solicitud/guardar}" th:object="${cliente}" method="post">
+
+        <input type="hidden" name="vehiculoId" th:value="${vehiculoId}">
+
+        <fieldset>
+            <legend>Información Personal (Sujeta a Cifrado)</legend>
+
+            <label for="nombre">Nombre Completo:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" required>
+
+            <label for="apellidoP">Apellido Paterno:</label>
+            <input type="text" id="apellidoP" th:field="*{apellidoP}" required>
+
+            <label for="apellidoM">Apellido Materno:</label>
+            <input type="text" id="apellidoM" th:field="*{apellidoM}" required>
+
+            <label for="RFC">RFC:</label>
+            <input type="text" id="RFC" th:field="*{RFC}"
+                   required pattern="[A-Za-z0-9Ñ&]{11,}">
+            <small style="display:block; margin-bottom:12px; color:#666;">Ejemplo: ABCD010101XYZ</small>
+
+
+            <label for="correo">Correo Electrónico:</label>
+            <input type="text" id="correo" th:field="*{correo}" required>
+
+            <label for="telefono">Teléfono (10 dígitos):</label>
+            <input type="number" id="telefono" th:field="*{telefono}"
+                   required pattern="[0-9]{10}">
+
+            <label for="direccion">Dirección Completa:</label>
+            <input type="text" id="direccion" th:field="*{direccion}" required>
+
+            <label for="ingresoMensual">Ingreso Mensual Comprobado:</label>
+            <input type="number" id="ingresoMensual" th:field="*{ingresoMensual}" required>
+        </fieldset>
+
+        <fieldset class="consentimiento-legal">
+            <legend>Aviso de Privacidad y Consentimiento</legend>
+
+            <label>
+                <input type="checkbox" id="acepto-ldpp" required>
+                Otorgo mi consentimiento <strong>explícito</strong> para el tratamiento y <strong>cifrado</strong> de mis datos personales sensibles conforme a la LDPP.
+            </label>
+        </fieldset>
+
+        <button type="submit">Continuar al Acuerdo de Venta de Vehiculo</button>
+    </form>
+</div>
+
+</body>
+</html>

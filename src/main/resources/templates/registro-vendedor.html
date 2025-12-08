@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Vendedor (Dueño del Vehículo)</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 35px 40px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.9em;
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1em;
+            color: #555;
+            background: #eef7ff;
+            padding: 12px 15px;
+            border-left: 4px solid #007bff;
+            border-radius: 6px;
+        }
+
+        /* === GRUPOS DE CAMPOS === */
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+            outline: none;
+        }
+
+        small {
+            margin-top: 4px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="form-container">
+
+    <h1>Paso 1: Registrar Datos del Vendedor (Dueño)</h1>
+    <p>Estos datos se usarán para identificar al dueño del vehículo y asociar su información bancaria más adelante.</p>
+
+    <form th:action="@{/vendedor/save}" th:object="${vendedor}" method="post">
+
+        <div class="form-group">
+            <label for="nombre">Nombre(s):</label>
+            <input type="text" id="nombre" th:field="*{nombre}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="apellidoP">Apellido Paterno:</label>
+            <input type="text" id="apellidoP" th:field="*{apellidoP}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="apellidoM">Apellido Materno:</label>
+            <input type="text" id="apellidoM" th:field="*{apellidoM}">
+        </div>
+
+        <div class="form-group">
+            <label for="RFC">RFC (Clave Única):</label>
+            <input type="text" id="RFC" th:field="*{RFC}"
+                   required pattern="[A-Za-z0-9Ñ&]{11,}">
+            <small>Ejemplo: ABCD010101XYZ</small>
+        </div>
+
+        <div class="form-group">
+            <label for="correo">Correo Electrónico:</label>
+            <input type="email" id="correo" th:field="*{correo}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono (10 dígitos):</label>
+            <input type="tel" id="telefono" th:field="*{telefono}"
+                   required pattern="[0-9]{10}">
+        </div>
+
+        <button type="submit">Continuar y Registrar Vehículo</button>
+
+    </form>
+
+</div>
+</body>
+</html>

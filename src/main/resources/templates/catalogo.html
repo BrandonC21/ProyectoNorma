@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Vehículos - AutoVenta Digital</title>
+    <style>
+        /* Estilos básicos inspirados en el diseño de las imágenes */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            /* El scroll vertical ya es el comportamiento predeterminado */
+        }
+        .header-nav {
+            background-color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky; /* Opcional: mantiene la barra de navegación visible al hacer scroll */
+            top: 0;
+            z-index: 10;
+        }
+        .header-nav a { text-decoration: none; color: #333; margin: 0 15px; font-weight: 500; }
+        .logo { font-size: 24px; font-weight: bold; color: black; }
+        .menu-derecho { display: flex; align-items: center; }
+        .btn-ubicacion {
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .catalogo-grid {
+            /* Grid para acomodo de 3 columnas o más, adaptándose al ancho */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .card-vehiculo {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            height: auto; /* Permite que la tarjeta crezca con el contenido */
+        }
+        .card-vehiculo:hover { transform: translateY(-5px); }
+        .card-imagen {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* Asegura que la imagen cubra el espacio sin distorsionarse */
+        }
+        .card-info { padding: 15px; }
+        .card-info h3 { margin: 0 0 5px 0; font-size: 1.2em; }
+        .card-info p { margin: 0 0 3px 0; font-size: 0.9em; color: #666; }
+        .precio { font-size: 1.4em; font-weight: bold; color: #333; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<header class="header-nav">
+    <div class="logo">HI motors / AutoVenta Digital</div>
+    <nav>
+        <a th:href="@{/credito}">Obtén un crédito</a>
+        <a th:href="@{/}">Compra un auto</a>
+        <a th:href="@{/vendedor/registrar}">Vende tu auto</a>
+        <a th:href="@{/conoce-mas}">Conoce más</a> </nav>
+    <div class="menu-derecho">
+        <span>🇲🇽</span>
+        <div class="btn-ubicacion">
+            📍 Ubicación
+        </div>
+        <span style="margin-left: 10px;">❤️</span>
+    </div>
+</header>
+
+<main>
+    <h1>Catálogo de Vehículos</h1>
+
+    <div style="padding: 0 20px;">
+        <form th:action="@{/}" method="get">
+            <label for="marca">Buscar por Marca:</label>
+            <input type="text" id="marca" name="marca" placeholder="Ej. Toyota o Honda" th:value="${filtroMarca}" style="padding: 8px; margin-right: 10px;">
+            <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">Buscar</button>
+            <a th:href="@{/}" th:if="${filtroMarca}">[Limpiar Filtro]</a>
+        </form>
+    </div>
+
+    <div class="catalogo-grid">
+        <div th:each="vehiculo : ${vehiculos}" class="card-vehiculo">
+            <a th:href="@{/vehiculos/{id}(id=${vehiculo.id})}" style="text-decoration: none; color: inherit;">
+
+                <img th:if="${vehiculo.urlImagen}"
+                     th:src="@{'/uploads/' +${vehiculo.urlImagen}}"
+                     alt="Imagen de un vehículo"
+                     class="card-imagen"/>
+                <img th:unless="${vehiculo.urlImagen}"
+                     src="/images/default.jpg"
+                     alt="Imagen no disponible"
+                     class="card-imagen"/>
+
+                <div class="card-info">
+                    <h3><span th:text="${vehiculo.marca}">Marca</span> • <span th:text="${vehiculo.modelo}">Modelo</span></h3>
+
+                    <p>
+                        <span th:text="${vehiculo.anioFabricacion}">2022</span>
+                        •
+                        <span th:text="${#numbers.formatInteger(vehiculo.kilometraje, 1, 'COMMA')}">90,000</span> km
+                        •
+                        <span th:text="${vehiculo.transmicion}">Manual</span>
+                    </p>
+
+                    <div class="precio">
+                        Precio desde <br/>
+                        $<span th:text="${#numbers.formatDecimal(vehiculo.precio, 1, 2)}">25,000.00</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(vehiculos)}">
+            <p>No se encontraron vehículos disponibles que coincidan con la búsqueda.</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

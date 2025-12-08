@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Compra</title>
+</head>
+<body>
+<h1>🎉 ¡Felicidades! Su Compra Ha Sido Confirmada.</h1>
+
+<h2>Detalles del Contrato</h2>
+
+<p><strong>Número de Contrato:</strong> <span th:text="${contrato.id}"></span></p>
+<p><strong>Fecha de Celebración:</strong> <span th:text="${contrato.fechaCelebracion}"></span></p>
+<p><strong>Vehículo Comprado:</strong>
+    <span th:text="|${contrato.vehiculo.marca} ${contrato.vehiculo.modelo} (${contrato.vehiculo.anioFabricacion})|"></span>
+</p>
+<p><strong>Cliente:</strong> <span th:text="${contrato.cliente.nombre}"></span></p>
+<p><strong>Versión del Acuerdo Legal Registrada:</strong>
+    <span th:text="${contrato.versionAcuerdoAceptada}"></span> (Registro de su **Click-Wrap**)
+</p>
+
+<h3 style="color: blue;">Cumplimiento Legal Implementado</h3>
+<p>El sistema ha asegurado:
+<ul>
+    <li>**LDPP:** Sus datos personales sensibles fueron **cifrados** antes de ser almacenados.</li>
+    <li>**Contratación:** La aceptación de los términos (**Click-Wrap**) fue registrada con la versión exacta del acuerdo.</li>
+</ul>
+</p>
+
+<button>Descargar Contrato Digital (PDF)</button>
+
+<p><a th:href="@{/static}">Volver al inicio</a></p>
+</body>
+</html>

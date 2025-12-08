@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Aceptación de Contrato y Licencias</title>
+</head>
+<body>
+<h1>Acuerdo Final y Aceptación de Términos (Click-Wrap)</h1>
+<p>Cliente: <strong th:text="${cliente.nombre}"></strong> | Vehículo: <strong th:text="|${vehiculo.marca} ${vehiculo.modelo}|"></strong></p>
+<p>Caracteristicas: Motor <strong th:text="${vehiculo.motor}"></strong> | Kilometraje<strong th:text="${vehiculo.kilometraje}"></strong> | Precio<strong th:text="${vehiculo.precio}"></strong> </p>
+
+<div class="acuerdo-scrollable" style="border: 1px solid black; padding: 10px; height: 300px; overflow-y: scroll;">
+    <h3>Contrato de Compraventa Nacional y Licencia de Uso (Versión <span th:text="${versionActual}"></span>)</h3>
+
+    <p><strong>CLAUSULA PRIMERA: OBJETO DEL CONTRATO.</strong> El VENDEDOR transfiere la propiedad del Vehículo <strong th:text="|${vehiculo.marca} ${vehiculo.modelo}|"></strong> al COMPRADOR.</p>
+
+    <p><strong>CLAUSULA SEGUNDA: LDPP.</strong> El VENDEDOR actúa como responsable del tratamiento, garantizando el CIFRADO de los datos sensibles del COMPRADOR.</p>
+
+    <p><strong>CLAUSULA TERCERA: LICENCIA CLICK-WRAP.</strong> El COMPRADOR acepta la licencia **click-wrap** limitada, no exclusiva e intransferible para usar la plataforma en su versión <span th:text="${versionActual}"></span>. La aceptación se registra al hacer clic en el botón inferior.</p>
+</div>
+
+<form th:action="@{/contrato/finalizar}" method="post">
+    <input type="hidden" name="vehiculoId" th:value="${vehiculo.id}">
+    <input type="hidden" name="clienteId" th:value="${cliente.id}">
+    <input type="hidden" name="versionAceptada" th:value="${versionActual}">
+
+    <input type="checkbox" id="acepto-terminos" required>
+    <label for="acepto-terminos">
+        Confirmo que he leído y **ACEPTO** el Contrato y los Términos de la **Versión <span th:text="${versionActual}"></span>**.
+    </label>
+
+    <button type="submit" style="background-color: red; color: white; padding: 10px;">Confirmar y Aceptar Contrato</button>
+</form>
+</body>
+</html>
