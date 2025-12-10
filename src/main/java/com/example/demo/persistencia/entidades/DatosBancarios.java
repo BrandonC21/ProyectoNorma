@@ -21,7 +21,7 @@ public class DatosBancarios {
 
     // Relación OneToOne con Vendedor
     @OneToOne
-    @JoinColumn(name = "vendedor_id", unique = true, nullable = false)
+    @JoinColumn(name = "vendedor_id", nullable = false)
     private Vendedor vendedor;
 
     public int getId() {

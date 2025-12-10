@@ -39,6 +39,7 @@ public class ECommerceController {
     @Autowired
     private VendedorService vendedorService;
 
+
     // Constante para la clave de la oferta en la sesión
     private static final String SESSION_OFERTA_KEY = "ofertaEstimada";
 
@@ -77,7 +78,7 @@ public class ECommerceController {
 
     // 3. Formulario de Solicitud (GET)
     @GetMapping("/solicitud/{vehiculoId}")
-    public String mostrarFormularioCliente(@PathVariable Long vehiculoId, Model model) {
+    public String mostrarFormularioCliente(@PathVariable int vehiculoId, Model model) {
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("vehiculoId", vehiculoId);
         return "solicitud-datos";
@@ -85,9 +86,8 @@ public class ECommerceController {
 
     // 4. Guardar Cliente (POST) - Invoca LDPP Service
     @PostMapping("/solicitud/guardar")
-    public String guardarCliente(@ModelAttribute Cliente cliente, @RequestParam Long vehiculoId) {
-        Cliente clienteGuardado = clienteService.registrarCliente(cliente); // ¡CIFRADO LDPP!
-        // Redirige al acuerdo con los IDs para cargar los datos en la vista siguiente
+    public String guardarCliente(@ModelAttribute Cliente cliente, @RequestParam int vehiculoId) {
+        Cliente clienteGuardado = clienteService.clienteRegistrado(cliente);
         return "redirect:/acuerdo/" + vehiculoId + "/" + clienteGuardado.getId();
     }
 
@@ -143,10 +143,6 @@ public class ECommerceController {
         return "registro-vendedor";
     }
 
-    @GetMapping("/static")
-    public String volver(){
-        return"catalogo";
-    }
 
     //9 mostrar formulario de registro de vehiculo
     @GetMapping("/vehiculos/registrar")
@@ -319,7 +315,7 @@ public class ECommerceController {
             status.setComplete();
 
             flash.addFlashAttribute("success", "¡Vehículo y datos de pago registrados con éxito!.");
-            return "redirect:";
+            return "redirect:/vehiculos";
 
         } catch (Exception e) {
             flash.addFlashAttribute("error", "Error al finalizar el registro: " + e.getMessage());

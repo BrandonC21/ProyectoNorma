@@ -1,19 +1,50 @@
 package com.example.demo.servicio;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
 public class CifradoUtil {
+
+    // Clave fija de 16 caracteres (AES-128)
+    private static final String CLAVE = "1234567890123456";
+
     // Método para cifrar datos sensibles antes de guardarlos en la BD
     public static String cifrar(String dato) {
-        // En producción, se usaría un algoritmo robusto como AES o RSA.
-        if (dato == null || dato.isEmpty()) return "";
-        return "CIFRADO-LDPP-" + dato.hashCode() + "-" + dato.substring(0, Math.min(3, dato.length()));
+        try {
+            if (dato == null || dato.isEmpty()) return "";
+
+            SecretKeySpec key = new SecretKeySpec(CLAVE.getBytes(), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            byte[] cifrado = cipher.doFinal(dato.getBytes());
+
+            return Base64.getEncoder().encodeToString(cifrado);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error cifrando: " + e.getMessage());
+        }
     }
 
-    // Método para descifrar datos (necesario para la vista de acuerdo)
+    // Método para descifrar datos
     public static String descifrar(String datoCifrado) {
-        // Simulación: extraemos parte del hash para demostrar el proceso
-        if (datoCifrado == null || !datoCifrado.startsWith("CIFRADO-LDPP-")) return datoCifrado;
+        try {
+            if (datoCifrado == null || datoCifrado.isEmpty()) return "";
 
-        // Simplemente devolveremos una representación para la demostración
-        return "DESCIFRADO_OK";
+            SecretKeySpec key = new SecretKeySpec(CLAVE.getBytes(), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+
+            byte[] decodificado = Base64.getDecoder().decode(datoCifrado);
+            byte[] decifrado = cipher.doFinal(decodificado);
+
+            return new String(decifrado);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error descifrando: " + e.getMessage());
+        }
     }
 }

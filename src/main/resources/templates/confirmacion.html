@@ -2,33 +2,101 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Confirmación de Compra</title>
+    <title>Confirmación de Compra y Documentos Legales</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #343a40; line-height: 1.6; padding: 40px; }
+        .container { max-width: 700px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); border-left: 5px solid #28a745; }
+        h1 { color: #28a745; margin-bottom: 5px; font-size: 2em; }
+        h2 { color: #004085; border-bottom: 2px solid #004085; padding-bottom: 8px; margin-top: 25px; font-size: 1.5em; }
+        .data-point { margin-bottom: 12px; border-left: 3px solid #ccc; padding-left: 10px; }
+        .data-point strong { color: #000; display: inline-block; min-width: 150px; }
+        .legal-summary { background-color: #e6f7ff; border: 1px solid #b3e0ff; padding: 15px; border-radius: 6px; margin-top: 30px; }
+        .legal-summary h3 { color: #007bff; margin-top: 0; }
+        .btn-download { background-color: #007bff; color: white; padding: 12px 25px; border: none; border-radius: 6px; font-size: 1em; cursor: pointer; transition: background-color 0.3s; margin-top: 20px; text-decoration: none; display: inline-block; font-weight: bold; }
+        .btn-download:hover { background-color: #0056b3; }
+        .action-group { text-align: center; margin-top: 30px; }
+    </style>
 </head>
 <body>
-<h1>🎉 ¡Felicidades! Su Compra Ha Sido Confirmada.</h1>
+<div class="container">
+    <h1>🎉 ¡Felicidades! Su Compra Ha Sido Confirmada.</h1>
+    <p>Su proceso de compra ha finalizado exitosamente. A continuación, encontrará los detalles de su transacción y la documentación para auditoría.</p>
 
-<h2>Detalles del Contrato</h2>
+    <h2>Detalles del Contrato de Compraventa</h2>
 
-<p><strong>Número de Contrato:</strong> <span th:text="${contrato.id}"></span></p>
-<p><strong>Fecha de Celebración:</strong> <span th:text="${contrato.fechaCelebracion}"></span></p>
-<p><strong>Vehículo Comprado:</strong>
-    <span th:text="|${contrato.vehiculo.marca} ${contrato.vehiculo.modelo} (${contrato.vehiculo.anioFabricacion})|"></span>
-</p>
-<p><strong>Cliente:</strong> <span th:text="${contrato.cliente.nombre}"></span></p>
-<p><strong>Versión del Acuerdo Legal Registrada:</strong>
-    <span th:text="${contrato.versionAcuerdoAceptada}"></span> (Registro de su **Click-Wrap**)
-</p>
+    <div class="data-point">
+        <strong>Número de Contrato:</strong>
+        <span th:text="${contrato.id}">[ID del Contrato]</span>
+    </div>
+    <div class="data-point">
+        <strong>Fecha de Celebración:</strong>
+        <span th:text="${contrato.fechaCelebracion}">[Fecha]</span>
+    </div>
+    <div class="data-point">
+        <strong>Cliente Comprador:</strong>
+        <span th:text="|${contrato.cliente.nombre} ${contrato.cliente.apellidoP}|">[Nombre del Cliente]</span>
+    </div>
+    <div class="data-point">
+        <strong>Vehículo Objeto:</strong>
+        <span th:text="|${contrato.vehiculo.marca} ${contrato.vehiculo.modelo} (${contrato.vehiculo.anioFabricacion})|">[Vehículo]</span>
+    </div>
+    <div class="data-point">
+        <strong>Precio de Venta Final:</strong>
+        $<span th:text="${#numbers.formatDecimal(contrato.vehiculo.precio, 0, 'COMMA', 2, 'POINT')}"></span> M.N.
+    </div>
 
-<h3 style="color: blue;">Cumplimiento Legal Implementado</h3>
-<p>El sistema ha asegurado:
-<ul>
-    <li>**LDPP:** Sus datos personales sensibles fueron **cifrados** antes de ser almacenados.</li>
-    <li>**Contratación:** La aceptación de los términos (**Click-Wrap**) fue registrada con la versión exacta del acuerdo.</li>
-</ul>
-</p>
+    <hr>
 
-<button>Descargar Contrato Digital (PDF)</button>
+    <div class="legal-summary">
+        <h3>🔒 Cumplimiento y Marco Legal Registrado</h3>
 
-<p><a th:href="@{/static}">Volver al inicio</a></p>
+        <p>Este registro constituye la prueba electrónica de su aceptación:</p>
+        <ul>
+            <li>
+                <strong>Versión de Acuerdo Aceptada (Auditable):</strong>
+                <span th:text="${contrato.versionAcuerdoAceptada}">[Versión]</span>
+                <small>(Esta versión está archivada digitalmente, cumpliendo con el estándar **Click-Wrap**).</small>
+            </li>
+            <li>
+                <strong>Protección de Datos Personales:</strong>
+                Sus datos sensibles (RFC, domicilio, teléfono) fueron cifrados conforme a la
+                <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong>.
+            </li>
+            <li>
+                <strong>Transferencia de Propiedad:</strong>
+                El proceso de cambio de propietario se iniciará conforme a las disposiciones vigentes del Registro Público Vehicular (REPUVE) y la autoridad estatal correspondiente.
+            </li>
+
+            <li>
+                <strong>Entrega de Documentos:</strong>
+                Se entregan los documentos originales que corresponden al vehículo:
+                <ul>
+                    <li>Factura original o carta factura</li>
+                    <li>Comprobantes de pagos de tenencias o refrendos</li>
+                    <li>Comprobante de baja de placas (si aplica)</li>
+                    <li>Comprobación de que el vehículo no cuenta con reporte de robo ni adeudos</li>
+                </ul>
+            </li>
+
+            <li>
+                <strong>Condiciones del Vehículo:</strong>
+                El vehículo se entrega en condiciones mecánicas y estéticas adecuadas a su año y uso, habiendo sido revisado previamente por el comprador.
+            </li>
+
+            <li>
+                <strong>Condiciones de Pago y Entrega:</strong>
+                Las partes acuerdan lugar, fecha y modalidad para la entrega del vehículo. La transferencia de pago se realizará únicamente si el comprador confirma su decisión final de adquirir el automóvil.
+            </li>
+        </ul>
+    </div>
+
+    <div class="action-group">
+        <a href="#" class="btn-download" title="Descargar la copia exacta del acuerdo que usted firmó electrónicamente.">
+            Descargar Contrato Digital (PDF)
+        </a>
+
+        <p style="margin-top: 20px;"><a th:href="@{/}" style="color: #6c757d;">Volver al Catálogo de Vehículos</a></p>
+    </div>
+</div>
 </body>
 </html>

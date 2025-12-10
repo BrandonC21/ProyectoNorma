@@ -2,34 +2,94 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Aceptación de Contrato y Licencias</title>
+    <title>Aceptación Final del Contrato de Compraventa</title>
+    <style>
+        /* Estilos básicos para la mejora visual y usabilidad */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        h1 { color: #004085; border-bottom: 3px solid #004085; padding-bottom: 10px; margin-bottom: 20px; }
+        .details-box { background-color: #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.95em; }
+        .acuerdo-scrollable { border: 1px solid #ccc; padding: 15px; height: 350px; overflow-y: scroll; margin-bottom: 25px; background-color: #f8f9fa; }
+        .acuerdo-scrollable h3 { margin-top: 0; color: #333; }
+        .acceptance-section { padding: 20px 0; border-top: 1px solid #eee; }
+        .acceptance-section label { font-size: 1.1em; font-weight: bold; color: #333; display: flex; align-items: center; margin-bottom: 15px; }
+        .acceptance-section input[type="checkbox"] { width: 20px; height: 20px; margin-right: 10px; }
+        .btn-confirm { background-color: #28a745; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer; transition: background-color 0.3s; }
+        .btn-confirm:hover { background-color: #218838; }
+        .version-label { color: #dc3545; font-weight: bold; }
+
+        /* Estilos específicos para el contenido legal */
+        .acuerdo-scrollable strong { font-weight: 700; color: #000; }
+        .acuerdo-scrollable h4 { margin-top: 20px; margin-bottom: 5px; color: #555; }
+    </style>
 </head>
 <body>
-<h1>Acuerdo Final y Aceptación de Términos (Click-Wrap)</h1>
-<p>Cliente: <strong th:text="${cliente.nombre}"></strong> | Vehículo: <strong th:text="|${vehiculo.marca} ${vehiculo.modelo}|"></strong></p>
-<p>Caracteristicas: Motor <strong th:text="${vehiculo.motor}"></strong> | Kilometraje<strong th:text="${vehiculo.kilometraje}"></strong> | Precio<strong th:text="${vehiculo.precio}"></strong> </p>
+<div class="container">
+    <h1>Acuerdo de Compraventa y Adhesión a Términos</h1>
+    <p class="version-label">Versión del Acuerdo: <span th:text="${versionActual}"></span></p>
 
-<div class="acuerdo-scrollable" style="border: 1px solid black; padding: 10px; height: 300px; overflow-y: scroll;">
-    <h3>Contrato de Compraventa Nacional y Licencia de Uso (Versión <span th:text="${versionActual}"></span>)</h3>
+    <div class="details-box">
+        <p><strong>CLIENTE:</strong> <span th:text="${cliente.nombre} + ' ' + ${cliente.apellidoP} + ' '+${cliente.apellidoM}"></span> (RFC: <span th:text="${cliente.RFC}"></span>)</p>
+        <p><strong>VEHÍCULO OBJETO:</strong> <span th:text="|${vehiculo.marca} ${vehiculo.modelo} ${vehiculo.version}|"></span></p>
+        <p><strong>CARACTERÍSTICAS:</strong> Año <span th:text="${vehiculo.anioFabricacion}"></span> | Kilometraje <span th:text="${vehiculo.kilometraje}"></span> km</p>
+        <p><strong>PRECIO FINAL DE VENTA:</strong> $<span th:text="${#numbers.formatDecimal(vehiculo.precio, 0, 'COMMA', 2, 'POINT')}"></span> M.N.</p>
+    </div>
 
-    <p><strong>CLAUSULA PRIMERA: OBJETO DEL CONTRATO.</strong> El VENDEDOR transfiere la propiedad del Vehículo <strong th:text="|${vehiculo.marca} ${vehiculo.modelo}|"></strong> al COMPRADOR.</p>
+    <div class="acuerdo-scrollable">
+        <h3>Contrato de Compraventa de Vehículo Seminuevo y Términos de Servicio (Versión <span th:text="${versionActual}"></span>)</h3>
 
-    <p><strong>CLAUSULA SEGUNDA: LDPP.</strong> El VENDEDOR actúa como responsable del tratamiento, garantizando el CIFRADO de los datos sensibles del COMPRADOR.</p>
+        <p><strong>PREÁMBULO.</strong> El presente Contrato de Adhesión se celebra entre **"El Vendedor"** (la plataforma de E-Commerce) y **"El Comprador"** (<span th:text="${cliente.nombre}"></span>) respecto al vehículo descrito anteriormente (El Vehículo).</p>
 
-    <p><strong>CLAUSULA TERCERA: LICENCIA CLICK-WRAP.</strong> El COMPRADOR acepta la licencia **click-wrap** limitada, no exclusiva e intransferible para usar la plataforma en su versión <span th:text="${versionActual}"></span>. La aceptación se registra al hacer clic en el botón inferior.</p>
+        <hr>
+
+        <h4>I. OBJETO Y PRECIO</h4>
+
+        <p><strong>CLÁUSULA PRIMERA: OBJETO DE LA COMPRAVENTA.</strong> El VENDEDOR transfiere la propiedad de El Vehículo, incluyendo sus accesorios y documentación original, al COMPRADOR. Dicho vehículo se identifica por la información detallada en el apartado de Detalles del Contrato.</p>
+
+        <p><strong>CLÁUSULA SEGUNDA: PRECIO Y PAGO.</strong> El precio total convenido y final es el que se indica como **Precio Final de Venta**. El COMPRADOR acepta que el pago se realizará de forma electrónica a través de los mecanismos de la plataforma. La propiedad se transfiere irrevocablemente una vez que los fondos hayan sido liquidados y validados en su totalidad.</p>
+
+        <p><strong>CLÁUSULA TERCERA: ENTREGA.</strong> La entrega física de El Vehículo al COMPRADOR se llevará a cabo en la fecha y lugar acordados posterior a la formalización de este contrato y la recepción del pago.</p>
+
+        <hr>
+
+        <h4>II. ESTADO Y GARANTÍAS</h4>
+
+        <p><strong>CLÁUSULA CUARTA: CONDICIÓN DEL VEHÍCULO.</strong> El COMPRADOR adquiere El Vehículo en el estado físico y mecánico "en el que se encuentra" (**As Is**), con el kilometraje y las condiciones de uso detalladas en la plataforma. El COMPRADOR declara estar satisfecho con la información proporcionada.</p>
+
+        <p><strong>CLÁUSULA QUINTA: GARANTÍA.</strong> El VENDEDOR **NO OTORGA GARANTÍA EXPRESA O IMPLÍCITA** sobre el funcionamiento futuro, la durabilidad o la idoneidad de El Vehículo, dada su naturaleza de bien usado, salvo por vicios ocultos determinados por la Ley o por las garantías limitadas que pudiera ofrecer un tercero asociado a la plataforma (si aplica).</p>
+
+        <p><strong>CLÁUSULA SEXTA: PROPIEDAD Y LIBERTAD DE GRAVÁMENES.</strong> El VENDEDOR declara que El Vehículo es de su legítima propiedad y se encuentra **libre de cualquier gravamen**, embargo, limitación de dominio, o adeudo de tenencia o multas al momento de la firma electrónica de este Contrato.</p>
+
+        <hr>
+
+        <h4>III. TÉRMINOS LEGALES Y ACEPTACIÓN ELECTRÓNICA</h4>
+
+        <p><strong>CLÁUSULA SÉPTIMA: ACEPTACIÓN DEL CONTRATO (CLICK-WRAP).</strong> El COMPRADOR acepta el presente Contrato de Adhesión en su **Versión <span th:text="${versionActual}"></span>** al marcar la casilla de confirmación y pulsar el botón de aceptación. Esta acción constituye la **firma electrónica** del COMPRADOR y tiene plena validez legal.</p>
+
+        <p><strong>CLÁUSULA OCTAVA: AUDITORÍA Y REGISTRO.</strong> La plataforma registrará la fecha, hora, dirección IP de origen, y la versión exacta del acuerdo aceptada (<span th:text="${versionActual}"></span>), sirviendo como prueba documental de la aceptación contractual para fines de cumplimiento y auditoría legal.</p>
+
+        <p><strong>CLÁUSULA NOVENA: PROTECCIÓN DE DATOS PERSONALES (LDPP).</strong> El COMPRADOR acepta que sus datos personales (incluyendo nombre, RFC y domicilio) serán cifrados y utilizados exclusivamente para los fines de esta transacción (transferencia de propiedad, facturación y cumplimiento legal), de conformidad con la Ley de Protección de Datos Personales (LDPP) aplicable.</p>
+
+        <p><strong>CLÁUSULA DÉCIMA: JURISDICCIÓN.</strong> Para la resolución de cualquier conflicto derivado de este Contrato, las partes se someten a la jurisdicción de los tribunales competentes de la ciudad de [Ciudad/Estado de la Sede Legal], renunciando a cualquier otro fuero que pudiera corresponderles.</p>
+
+        <p style="margin-top: 30px; font-weight: bold; color: #dc3545;">ESTE DOCUMENTO ES UN CONTRATO LEGALMENTE VINCULANTE. POR FAVOR, LÉALO DETENIDAMENTE ANTES DE ACEPTAR.</p>
+    </div>
+
+    <form th:action="@{/contrato/finalizar}" method="post" class="acceptance-section">
+
+        <input type="hidden" name="vehiculoId" th:value="${vehiculo.id}">
+        <input type="hidden" name="clienteId" th:value="${cliente.id}">
+        <input type="hidden" name="versionAceptada" th:value="${versionActual}">
+
+        <label for="acepto-terminos">
+            <input type="checkbox" id="acepto-terminos" required>
+            Confirmo que he leído, entendido y **ACEPTO** el Contrato de Compraventa y los Términos de Servicio en su **Versión <span th:text="${versionActual}"></span>**.
+        </label>
+
+        <button type="submit" class="btn-confirm">
+            Finalizar Compra y Firmar Contrato
+        </button>
+    </form>
 </div>
-
-<form th:action="@{/contrato/finalizar}" method="post">
-    <input type="hidden" name="vehiculoId" th:value="${vehiculo.id}">
-    <input type="hidden" name="clienteId" th:value="${cliente.id}">
-    <input type="hidden" name="versionAceptada" th:value="${versionActual}">
-
-    <input type="checkbox" id="acepto-terminos" required>
-    <label for="acepto-terminos">
-        Confirmo que he leído y **ACEPTO** el Contrato y los Términos de la **Versión <span th:text="${versionActual}"></span>**.
-    </label>
-
-    <button type="submit" style="background-color: red; color: white; padding: 10px;">Confirmar y Aceptar Contrato</button>
-</form>
 </body>
 </html>

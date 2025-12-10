@@ -5,6 +5,8 @@ import com.example.demo.persistencia.repositorio.ClienteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ClienteServicio {
     @Autowired
@@ -26,5 +28,19 @@ public class ClienteServicio {
         return cliente;
     }
 
+    public Cliente clienteRegistrado(Cliente cliente) {
+        String rfcCifrado = CifradoUtil.cifrar(cliente.getRFC());
+        Optional<Cliente> clienteExixtente = clienteRepo.findAllByRFC(rfcCifrado);
+        if (clienteExixtente.isPresent()){
+            //Actulizar solo los campos
+            Cliente actualizado = clienteExixtente.get();
+            actualizado.setCorreo(cliente.getCorreo());
+            actualizado.setTelefono(cliente.getTelefono());
+            actualizado.setIngresoMensual(cliente.getIngresoMensual());
+            return clienteRepo.save(actualizado);
+        } else {
+            return registrarCliente(cliente);
+        }
+    }
 
 }

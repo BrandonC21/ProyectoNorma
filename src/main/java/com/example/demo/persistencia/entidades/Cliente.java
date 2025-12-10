@@ -1,5 +1,6 @@
 package com.example.demo.persistencia.entidades;
 
+import com.example.demo.servicio.CifradoUtil;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class Cliente {
     public void setContratoList(List<Contrato> contratoList) {
         this.contratoList = contratoList;
     }
+
 
     public int getId() {
         return id;
@@ -104,4 +106,16 @@ public class Cliente {
     public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
+
+    public String desifrado(){
+        String rfc = CifradoUtil.descifrar(getRFC());
+        return rfc;
+    }
+
+
+
+
+
+
+
 }
