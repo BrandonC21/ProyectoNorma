@@ -69,7 +69,7 @@
           method="post"
           enctype="multipart/form-data">
 
-    <!-- <form th:action="@{/vehiculo/save}" th:object="${vehiculo}" method="post" enctype="multipart/form-data"> !-->
+        <!-- <form th:action="@{/vehiculo/save}" th:object="${vehiculo}" method="post" enctype="multipart/form-data"> !-->
         <div class="form-grid">
 
             <div class="form-group"><label for="marca">Marca:</label>
@@ -110,6 +110,10 @@
             <div class="form-group">
                 <label for="precio">Precio Base (Referencia $):</label>
                 <input type="number" id="precio" th:field="*{precio}" required min="0" max="1000000" >
+            </div>
+            <div class="form-group">
+                <label for="numeroSerie"> Ingrese el VIN:</label>
+                <input type="text" id="numeroSerie" th:field="*{numeroSerie}" maxlength="18" required>
             </div>
 
             <div class="form-group" th:unless="${ofertaEstimada != null}">

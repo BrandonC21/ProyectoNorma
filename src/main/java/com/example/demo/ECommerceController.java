@@ -1,12 +1,15 @@
 package com.example.demo;
 import com.example.demo.persistencia.entidades.*;
 import com.example.demo.persistencia.repositorio.ContratoRepo;
+import com.example.demo.persistencia.repositorio.DatosCompraRepo;
 import com.example.demo.persistencia.repositorio.VehiculoRepo;
 import com.example.demo.servicio.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +41,10 @@ public class ECommerceController {
     private IUploadFileService uploadFileService;
     @Autowired
     private VendedorService vendedorService;
+    @Autowired
+    private DatosCompraServicio datosCompraServicio;
+    @Autowired
+    private PdfGeneratorService pdfGeneratorService;
 
 
     // Constante para la clave de la oferta en la sesión
@@ -88,33 +95,100 @@ public class ECommerceController {
     @PostMapping("/solicitud/guardar")
     public String guardarCliente(@ModelAttribute Cliente cliente, @RequestParam int vehiculoId) {
         Cliente clienteGuardado = clienteService.clienteRegistrado(cliente);
-        return "redirect:/acuerdo/" + vehiculoId + "/" + clienteGuardado.getId();
+        return "redirect:/pago/iniciar/" + vehiculoId + "/" + clienteGuardado.getId();
+
     }
 
+
+    @GetMapping("/pago/iniciar/{vehiculoId}/{clienteId}")
+    public String mostrarPago(
+            @PathVariable int vehiculoId,
+            @PathVariable int clienteId,
+            Model model) {
+
+        // 1. Obtener el cliente
+        Cliente cliente = clienteService.obtenerCliente(clienteId);
+
+        // 2. Pasar IDs y Cliente
+        model.addAttribute("cliente", cliente);
+        model.addAttribute("vehiculoId", vehiculoId);
+
+        model.addAttribute("datosCompra", new DatosCompra()); // <-- AGREGADO
+
+        // 3. Devolver la vista de pago
+        return "pantalla-pago";
+    }
+    // ECommerceController.java
+
+    @PostMapping("/pago/confirmar")
+    public String confirmarPago(@ModelAttribute DatosCompra datosCompra,
+
+            // IDs que viajan por separado
+            @RequestParam("vehiculoId") int vehiculoId,
+            @RequestParam("clienteId") int clienteId) {
+
+        // 1. Obtener la entidad Cliente para la relación
+        Cliente cliente = clienteService.obtenerCliente(clienteId);
+
+        // 2. VINCULAR el Cliente al objeto de pago
+        datosCompra.setCliente(cliente);
+
+        // 3.CAMBIO CLAVE: Guardar usando el SERVICIO (que es responsable de guardar y cifrar/gestionar seguridad)
+        DatosCompra pagoGuardado = datosCompraServicio.agregarDatos(datosCompra); // <-- USANDO EL SERVICIO INYECTADO
+
+        // 4. Redirigir al acuerdo final, llevando los tres IDs
+        return "redirect:/acuerdo/" + vehiculoId + "/" + clienteId + "/" + pagoGuardado.getId();
+    }
+
+
+
+
     // 5. Vista de Acuerdo (Click-Wrap)
-    @GetMapping("/acuerdo/{vehiculoId}/{clienteId}")
-    public String mostrarAcuerdo(@PathVariable int vehiculoId, @PathVariable int clienteId, Model model) {
-        model.addAttribute("cliente", clienteService.obtenerCliente(clienteId)); // Obtiene cliente DESCIFRADO temporalmente
+    // ECommerceController.java (Método ajustado)
+
+    @GetMapping("/acuerdo/{vehiculoId}/{clienteId}/{pagoId}")
+    public String mostrarAcuerdo(
+            @PathVariable int vehiculoId,
+            @PathVariable int clienteId,
+            @PathVariable int pagoId, // Nuevo ID de la URL
+            Model model) {
+
+        // Obtener y descifrar cliente
+        model.addAttribute("cliente", clienteService.obtenerCliente(clienteId));
+
+        // Obtener vehículo
         model.addAttribute("vehiculo", vehiculoRepository.findById(vehiculoId).orElseThrow());
+
+        // Pasar los IDs al modelo para que sean enviados en el POST de aceptación
+        model.addAttribute("pagoId", pagoId);
         model.addAttribute("versionActual", ContratoService.VERSION_ACTUAL_ACUERDO);
+
         return "acuerdo-terminos";
     }
 
+    // ECommerceController.java
+
     // 6. Finalizar Contrato (POST) - Invoca Click-Wrap Service
     @PostMapping("/contrato/finalizar")
-    public String finalizarContrato(@RequestParam int vehiculoId, @RequestParam int clienteId, @RequestParam String versionAceptada,
+    public String finalizarContrato(@RequestParam int vehiculoId,
+                                    @RequestParam int clienteId,
+                                    @RequestParam int pagoId,
+                                    @RequestParam String versionAceptada,
                                     RedirectAttributes flash) {
         try {
-            Contrato contrato = contratoService.generarContrato(clienteId, vehiculoId, versionAceptada); // ¡VALIDACIÓN CLICK-WRAP!
+            // Asegúrate de que tu ContratoService reciba el pagoId
+            Contrato contrato = contratoService.generarContrato(clienteId, vehiculoId, pagoId, versionAceptada);
+
             vehiculoService.marcarComoVendido(vehiculoId);
             flash.addFlashAttribute("success", "Contrato de venta finalizado y vehículo retirado del inventario.");
             return "redirect:/confirmacion/" + contrato.getId();
         }catch (Exception e){
             // Manejo de errores: si falla el guardado del contrato o la eliminación del vehículo.
             flash.addFlashAttribute("error", "Error al finalizar la venta y contrato: " + e.getMessage());
-            return "redirect:/acuerdo/" + vehiculoId + "/" + clienteId;
+            return "redirect:/acuerdo/" + vehiculoId + "/" + clienteId + "/" + pagoId;
         }
-    }
+      }
+
 
     // 7. Confirmación de Compra
     @GetMapping("/confirmacion/{contratoId}")
@@ -322,6 +396,47 @@ public class ECommerceController {
             return "redirect:/vehiculo/datos-bancarios";
         }
     }
+    @GetMapping("/contrato/descargar/{id}")
+    public ResponseEntity<Resource> descargarContrato(@PathVariable int id) {
+        try {
+            // 1. Obtener el Contrato (con Cliente y Vehiculo)
+            Contrato contrato = contratoService.obtenerContratoPorId(id);
+
+            if (contrato == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // 2. Generar el PDF como un array de bytes usando el servicio
+            byte[] pdfBytes = pdfGeneratorService.generarContratoPDF(contrato); // Llama al servicio
+
+            // 3. Configurar la respuesta HTTP para la descarga
+            ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+            String fileName = "Contrato_Compraventa_" + contrato.getId() + ".pdf";
+
+            return ResponseEntity.ok()
+                    // Indica al navegador que descargue el archivo
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + fileName + "\"")
+                    // Define el tipo de archivo
+                    .contentType(MediaType.APPLICATION_PDF)
+                    // Establece la longitud del contenido
+                    .contentLength(pdfBytes.length)
+                    // Cuerpo de la respuesta
+                    .body(resource);
+
+        } catch (Exception e) {
+            // Manejo de errores de generación de PDF o base de datos
+            System.err.println("Error al descargar el contrato: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+   //Ver aviso de privacidad
+    @GetMapping("/aviso-privacidad")
+    public String avisoPrivacidad() {
+        return "aviso-privacidad";
+    }
+
 
 
 }

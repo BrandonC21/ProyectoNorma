@@ -23,8 +23,21 @@ public class Cliente {
     private String direccion;
     private double ingresoMensual;
 
+    //Relacion Uno a Muchos Con Constrato
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratoList;
+
+    //Relacion un Cliente puede tener multiples datos de Multiples Datos de compra
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DatosCompra> metodosList;
+
+    public List<DatosCompra> getMetodosList() {
+        return metodosList;
+    }
+
+    public void setMetodosList(List<DatosCompra> metodosList) {
+        this.metodosList = metodosList;
+    }
 
     public List<Contrato> getContratoList() {
         return contratoList;

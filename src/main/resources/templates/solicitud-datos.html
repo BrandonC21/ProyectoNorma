@@ -56,7 +56,6 @@
             color: #007bff;
         }
 
-        /* Grid de inputs */
         fieldset label {
             font-weight: 600;
             color: #444;
@@ -110,16 +109,25 @@
             background-color: #0056b3;
         }
 
+        .aviso-privacidad-box {
+            background: #fef6e4;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #f9a825;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            color: #444;
+        }
     </style>
 </head>
 
 <body>
 
 <div class="form-container">
-    <h1>Datos Del Cliente y Solicitud de Crédito</h1>
+    <h1>Datos del Cliente y Solicitud de Crédito</h1>
 
     <p>
-        Sus datos serán <strong>cifrados</strong> y protegidos conforme a la LDPP antes de ser almacenados.
+        Sus datos serán <strong>cifrados</strong> y protegidos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.
     </p>
 
     <form th:action="@{/solicitud/guardar}" th:object="${cliente}" method="post">
@@ -127,7 +135,7 @@
         <input type="hidden" name="vehiculoId" th:value="${vehiculoId}">
 
         <fieldset>
-            <legend>Información Personal (Sujeta a Cifrado)</legend>
+            <legend>Información Personal (Se Cifrará Antes de Guardarse)</legend>
 
             <label for="nombre">Nombre Completo:</label>
             <input type="text" id="nombre" th:field="*{nombre}" required>
@@ -139,10 +147,8 @@
             <input type="text" id="apellidoM" th:field="*{apellidoM}" required>
 
             <label for="RFC">RFC:</label>
-            <input type="text" id="RFC" th:field="*{RFC}"
-                   required pattern="[A-Za-z0-9Ñ&]{11,}">
+            <input type="text" id="RFC" th:field="*{RFC}" required pattern="[A-Za-z0-9Ñ&]{11,}">
             <small style="display:block; margin-bottom:12px; color:#666;">Ejemplo: ABCD010101XYZ</small>
-
 
             <label for="correo">Correo Electrónico:</label>
             <input type="text" id="correo" th:field="*{correo}" required>
@@ -158,16 +164,27 @@
             <input type="number" id="ingresoMensual" th:field="*{ingresoMensual}" required>
         </fieldset>
 
+        <!-- CLICK-WRAP AGREEMENT -->
         <fieldset class="consentimiento-legal">
             <legend>Aviso de Privacidad y Consentimiento</legend>
 
+            <div class="aviso-privacidad-box">
+                <strong>Aviso de Privacidad Simplificado:</strong><br>
+                Sus datos personales serán utilizados exclusivamente para evaluar su solicitud
+                de crédito, validar su identidad y generar el contrato correspondiente.
+                El tratamiento cumple con la LFPDPPP.
+                Puede consultar el aviso integral aquí:
+                <a href="/aviso-privacidad" target="_blank">Ver Aviso de Privacidad Completo</a>
+            </div>
+
             <label>
                 <input type="checkbox" id="acepto-ldpp" required>
-                Otorgo mi consentimiento <strong>explícito</strong> para el tratamiento y <strong>cifrado</strong> de mis datos personales sensibles conforme a la LDPP.
+                Acepto de forma expresa y voluntaria el <strong>Aviso de Privacidad</strong> y otorgo mi consentimiento para el tratamiento, almacenamiento y <strong>cifrado</strong> de mis datos personales sensibles.
             </label>
+
         </fieldset>
 
-        <button type="submit">Continuar al Acuerdo de Venta de Vehiculo</button>
+        <button type="submit">Continuar al Acuerdo de Venta de Vehículo</button>
     </form>
 </div>
 

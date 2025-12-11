@@ -19,8 +19,8 @@
 </head>
 <body>
 <div class="container">
-    <h1>🎉 ¡Felicidades! Su Compra Ha Sido Confirmada.</h1>
-    <p>Su proceso de compra ha finalizado exitosamente. A continuación, encontrará los detalles de su transacción y la documentación para auditoría.</p>
+    <h1>🎉 ¡Felicidades! Su Procesos de Apartado Ha Sido Confirmada.</h1>
+    <p>Su proceso de compra finalizara cuando se complete la suma total del vehiculo.</p>
 
     <h2>Detalles del Contrato de Compraventa</h2>
 
@@ -40,6 +40,12 @@
         <strong>Vehículo Objeto:</strong>
         <span th:text="|${contrato.vehiculo.marca} ${contrato.vehiculo.modelo} (${contrato.vehiculo.anioFabricacion})|">[Vehículo]</span>
     </div>
+
+    <div class="data-point">
+        <strong>Pago Inicial (10%):</strong>
+        $<span th:text="${#numbers.formatDecimal(contrato.vehiculo.precio * 0.10, 0, 'COMMA', 2, 'POINT')}"></span> M.N.
+    </div>
+
     <div class="data-point">
         <strong>Precio de Venta Final:</strong>
         $<span th:text="${#numbers.formatDecimal(contrato.vehiculo.precio, 0, 'COMMA', 2, 'POINT')}"></span> M.N.
@@ -91,7 +97,9 @@
     </div>
 
     <div class="action-group">
-        <a href="#" class="btn-download" title="Descargar la copia exacta del acuerdo que usted firmó electrónicamente.">
+        <a th:href="@{/contrato/descargar/{id}(id=${contrato.id})}"
+           class="btn-download"
+           title="Descargar la copia exacta del acuerdo que usted firmó electrónicamente.">
             Descargar Contrato Digital (PDF)
         </a>
 

@@ -21,6 +21,8 @@ public class Vehiculo {
     @Column(nullable = false)
     private double precio;
     private String urlImagen;
+    private String numeroSerie;
+    private String color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendedor_id", nullable = true)
@@ -29,6 +31,22 @@ public class Vehiculo {
     //Para ver si el auto esta disponible o vendido
     @Column(nullable = false)
     private Boolean vendido = false;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getNumeroSerie() {
+        return numeroSerie;
+    }
+
+    public void setNumeroSerie(String numeroSerie) {
+        this.numeroSerie = numeroSerie;
+    }
 
     public Vendedor getVendedor() {
         return vendedor;

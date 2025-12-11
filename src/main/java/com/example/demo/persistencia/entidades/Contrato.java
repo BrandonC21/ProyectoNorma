@@ -18,6 +18,11 @@ public class Contrato {
     @JoinColumn(name = "vehiculo_id")
     private Vehiculo vehiculo;
 
+    //  Un Contrato se asocia a Un Metodo de pago
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "metodo_pago_id", nullable = true) // nullable=true si el pago es en efectivo/transferencia bancaria, sino false
+    private DatosCompra metodoPagoUsado;
+
     @Column(name = "fecha_celebracion")
     private LocalDate fechaCelebracion;
 
@@ -25,7 +30,13 @@ public class Contrato {
     @Column(name = "version_acuerdo_aceptada")
     private String versionAcuerdoAceptada;
 
-    // --- IMPORTANTE: Getters y Setters ---
+    public DatosCompra getMetodoPagoUsado() {
+        return metodoPagoUsado;
+    }
+
+    public void setMetodoPagoUsado(DatosCompra metodoPagoUsado) {
+        this.metodoPagoUsado = metodoPagoUsado;
+    }
 
     // Getter que debe existir para que Spring Data JPA lo reconozca
     public String getVersionAcuerdoAceptada() {

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Seguro</title>
+
+    <style>
+        /* ... (Estilos Omitidos por Brevedad) ... */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f4f4;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            background: #007bff;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2 th:text="'Pago del Cliente: ' + ${cliente.nombre}"></h2>
+
+    <form th:action="@{/pago/confirmar}" th:object="${datosCompra}" method="post">
+
+        <input type="hidden" name="vehiculoId" th:value="${vehiculoId}">
+        <input type="hidden" name="clienteId" th:value="${cliente.id}">
+        <h3>Se pagará el 10% del vehículo como garantía de apartado</h3>
+
+        <label>Método de Pago:</label>
+        <select th:field="*{metodo}" required>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+            <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+            <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+        </select>
+
+        <label>Número de Tarjeta:</label>
+        <input type="text" th:field="*{numeroTarjeta}" maxlength="16" required>
+
+        <label>Fecha de Expiración (MM/AA):</label>
+        <input type="text" th:field="*{fecha}" placeholder="MM/AA" required>
+
+        <label>CVV:</label>
+        <input type="password" th:field="*{cvs}" maxlength="4" required>
+
+        <button type="submit">Confirmar Pago</button>
+    </form>
+</div>
+
+</body>
+</html>
