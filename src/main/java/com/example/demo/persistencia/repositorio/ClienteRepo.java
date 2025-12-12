@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClienteRepo extends JpaRepository<Cliente,Integer> {
-    List<Cliente> findByNombreContainingIgnoreCase(String nombre);
+    //Bucca a un cliente por el RFC
     Optional<Cliente> findAllByRFC(String rfc);
 }

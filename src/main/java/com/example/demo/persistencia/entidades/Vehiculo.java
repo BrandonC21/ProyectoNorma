@@ -21,6 +21,7 @@ public class Vehiculo {
     @Column(nullable = false)
     private double precio;
     private String urlImagen;
+    @Column(nullable = false, unique = true)
     private String numeroSerie;
     private String color;
 

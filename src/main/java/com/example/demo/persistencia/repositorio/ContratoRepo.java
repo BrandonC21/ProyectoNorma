@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface ContratoRepo extends JpaRepository<Contrato, Integer> {
     List<Contrato> findByVersionAcuerdoAceptada(String version);
-
-    List<Contrato> findByClienteId(int clienteId);
 }

@@ -9,7 +9,7 @@ public class DatosBancarios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    // CRÍTICO: Clave Bancaria Estandarizada
+    // Numero de clase unico
     @Column(nullable = false, unique = true)
     private String CLABE;
 

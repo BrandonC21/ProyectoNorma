@@ -17,7 +17,7 @@ public class VendedorService {
     @Autowired
     private DatosBancariosRepo datosBancariosRepo;
 
-    // 1. Guardar solo el vendedor (Primer paso)
+    // Registra el vendedro
     public Vendedor registrarVendedor(Vendedor vendedor) {
         return vendedorRepo.save(vendedor);
     }
@@ -26,45 +26,31 @@ public class VendedorService {
 
     public Vendedor guardarDatosBancarios(int vendedorId, DatosBancarios nuevosDatosBancarios) throws Exception {
 
-        // 1. Obtener el Vendedor
+        // Se obtiene el vendedor
         Vendedor vendedor = vendedorRepo.findById(vendedorId)
                 .orElseThrow(() -> new Exception("Vendedor no encontrado"));
 
-        // 2. Intentar encontrar los datos bancarios existentes para este vendedor.
+        // Busca los datos bancarios para un usuario
         Optional<DatosBancarios> datosExistentesOpt = datosBancariosRepo.findByVendedorId(vendedorId);
 
         DatosBancarios datosAActualizar;
 
         if (datosExistentesOpt.isPresent()) {
-            // *** CASO 1: ACTUALIZACIÓN (UPDATE) ***
-            datosAActualizar = datosExistentesOpt.get();
 
-            // Mapear los nuevos datos al objeto existente
+            datosAActualizar = datosExistentesOpt.get();
             datosAActualizar.setNombreTitular(nuevosDatosBancarios.getNombreTitular());
             datosAActualizar.setCLABE(nuevosDatosBancarios.getCLABE());
             datosAActualizar.setNombreBanco(nuevosDatosBancarios.getNombreBanco());
-            // ... setear los demás campos bancarios que apliquen ...
-
-            // El ID del vendedor y la clave primaria (PK) del objeto ya están seteados.
-            //
 
         } else {
-            // *** CASO 2: INSERCIÓN (INSERT) ***
+            // Realiza la insercion
             datosAActualizar = nuevosDatosBancarios;
-            // La entidad ya está lista para ser insertada, solo falta vincular el vendedor
+
         }
-
-        // 3. Establecer/Re-establecer la relación bidireccional (Crucial para persistencia)
+        // Establecer la relacion biderecional
         datosAActualizar.setVendedor(vendedor);
-
-        // 4. Persistir (Hibernate decidirá si es UPDATE o INSERT)
         DatosBancarios datosPersistidos = datosBancariosRepo.save(datosAActualizar);
-
-        // 5. Opcional, pero recomendado: Asegurar la consistencia bidireccional en Vendedor
         vendedor.setDatosBancarios(datosPersistidos);
-        // Si la relación es bidireccional, es bueno guardar también el vendedor para asegurar
-        // que la referencia en la entidad Vendedor esté actualizada en la sesión.
-        // vendedorRepo.save(vendedor);
 
         return vendedor;
     }

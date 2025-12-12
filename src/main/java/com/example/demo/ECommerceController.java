@@ -67,10 +67,9 @@ public class ECommerceController {
     public String listarVehiculos(@RequestParam(required = false) String marca, Model model) {
         if (marca != null && !marca.isEmpty()) {
             //model.addAttribute("vehiculos", vehiculoRepository.findByMarca(marca));
-            // Filtra por marca Y que NO esté vendido
+            // Filtra por marca Y que NO este vendido
             model.addAttribute("vehiculos", vehiculoRepository.findByMarcaAndVendidoFalse(marca));
         } else {
-            // model.addAttribute("vehiculos", vehiculoRepository.findAll());
             model.addAttribute("vehiculos", vehiculoRepository.findByVendidoFalse());
         }
         return "catalogo";
@@ -144,8 +143,6 @@ public class ECommerceController {
 
 
     // 5. Vista de Acuerdo (Click-Wrap)
-    // ECommerceController.java (Método ajustado)
-
     @GetMapping("/acuerdo/{vehiculoId}/{clienteId}/{pagoId}")
     public String mostrarAcuerdo(
             @PathVariable int vehiculoId,
@@ -166,7 +163,6 @@ public class ECommerceController {
         return "acuerdo-terminos";
     }
 
-    // ECommerceController.java
 
     // 6. Finalizar Contrato (POST) - Invoca Click-Wrap Service
     @PostMapping("/contrato/finalizar")
@@ -176,14 +172,12 @@ public class ECommerceController {
                                     @RequestParam String versionAceptada,
                                     RedirectAttributes flash) {
         try {
-            // Asegúrate de que tu ContratoService reciba el pagoId
             Contrato contrato = contratoService.generarContrato(clienteId, vehiculoId, pagoId, versionAceptada);
 
             vehiculoService.marcarComoVendido(vehiculoId);
             flash.addFlashAttribute("success", "Contrato de venta finalizado y vehículo retirado del inventario.");
             return "redirect:/confirmacion/" + contrato.getId();
         }catch (Exception e){
-            // Manejo de errores: si falla el guardado del contrato o la eliminación del vehículo.
             flash.addFlashAttribute("error", "Error al finalizar la venta y contrato: " + e.getMessage());
             return "redirect:/acuerdo/" + vehiculoId + "/" + clienteId + "/" + pagoId;
         }
@@ -239,28 +233,7 @@ public class ECommerceController {
                 .body(resource);
     }
 
-    // 11 Guardar Vehiculo e imagen
-    /*
-    @PostMapping("/save")
-    public String saveMeme(@Validated @ModelAttribute("vehiculo") Vehiculo vehiculo, BindingResult result, Model model,
-                           @RequestParam("imagenFile") MultipartFile image, RedirectAttributes flash, SessionStatus status)
-            throws Exception {
-        if (result.hasErrors()) {
-            System.out.println(result.getFieldError());
-            return "vender-vehiculo";
-        } else {
-            if (!image.isEmpty()) {
-                if (vehiculo.getId() > 0 && vehiculo.getUrlImagen() != null && vehiculo.getUrlImagen().length() > 0) {
-                    uploadFileService.delete(vehiculo.getUrlImagen());
-                }
-                String uniqueFileName = uploadFileService.copy(image);
-                vehiculo.setUrlImagen(uniqueFileName);
-            }
-            vehiculoService.agregarVehiculo(vehiculo);
-            status.setComplete();
-        }
-        return "redirect:";
-    }*/
+
 
     //Guardar el vendedor
     @PostMapping("/vendedor/save")
@@ -303,45 +276,12 @@ public class ECommerceController {
         );
         // 3. ALMACENAMIENTO TEMPORAL EN SESIÓN
         session.setAttribute(SESSION_OFERTA_KEY, ofertaEstimada);
-        //vehiculo.setPrecio(ofertaEstimada);
-        // El objeto 'vehiculo' (con la URL temporal) se mantiene por @SessionAttributes
-
         // 4. RETORNA LA VISTA
         model.addAttribute(SESSION_OFERTA_KEY, ofertaEstimada);
         return "vender-vehiculo";
     }
-    /*
-    @PostMapping("/vehiculo/save")
-    public String finalizarVenta(@ModelAttribute("vehiculo") Vehiculo vehiculo, // Obtiene el objeto completo de la Sesión
-                                 HttpSession session,
-                                 SessionStatus status,
-                                 RedirectAttributes flash) {
 
-        // 1. RECUPERAR OFERTA
-        Double ofertaAceptada = (Double) session.getAttribute(SESSION_OFERTA_KEY);
-
-        if (ofertaAceptada == null || vehiculo.getUrlImagen() == null || vehiculo.getUrlImagen().isEmpty()) {
-            flash.addFlashAttribute("error", "Error: La sesión expiró o faltan datos. Inicie el proceso de nuevo.");
-            // Si hay error, intentamos borrar la imagen temporal subida en el paso 1
-            if (vehiculo.getUrlImagen() != null && !vehiculo.getUrlImagen().isEmpty()) {
-                try { uploadFileService.delete(vehiculo.getUrlImagen()); } catch (Exception ignored) {}
-            }
-            return "redirect:/admin/vehiculos/registrar";
-        }
-
-        // 2. GUARDADO DEFINITIVO EN BASE DE DATOS
-        vehiculo.setPrecio(ofertaAceptada);
-
-        // ESTE ES EL PASO CRÍTICO: Persistencia
-        vehiculoService.agregarVehiculo(vehiculo);
-
-        // 3. LIMPIEZA DE SESIÓN
-        session.removeAttribute(SESSION_OFERTA_KEY);
-        status.setComplete(); // Limpia el atributo 'vehiculo' de la sesión
-
-        flash.addFlashAttribute("success", "¡Venta finalizada con éxito! Vehículo registrado.");
-        return "redirect:/finalizar-registro"; // Redirigir al catálogo
-    } */
+    //Mostar formulario de datos de bancarios
     @GetMapping("/vehiculo/datos-bancarios")
     public String mostrarFormularioBancario(Model model, @ModelAttribute("vendedorId") Integer vendedorId) {
         if (vendedorId == null) {
@@ -351,7 +291,7 @@ public class ECommerceController {
         return "registrar-datos-bancarios"; // Crear esta nueva vista
     }
 
-    // 14. Guardado Final de la Venta (Paso 3.2: Guarda Banco, Vincula Vendedor, Guarda Vehículo)
+    //  Guardado Final de la Venta
     @PostMapping("/vehiculo/finalizar-registro")
     public String finalizarRegistroVenta(@ModelAttribute @Validated DatosBancarios datosBancarios,
                                          BindingResult result,

@@ -23,26 +23,10 @@ public class VehiculoService {
                 .orElseThrow(() -> new Exception("Vehículo con ID " + id + " no encontrado."));
 
         vehiculo.setVendido(true); // Se marca como vendido
-        vehiculoRepo.save(vehiculo); // Se guarda el cambio (UPDATE)
-    }
-    //Eliminar Vehiculo
-    public void eliminarVehiculo(int id)throws Exception{
-        Vehiculo vehiculo = vehiculoRepo.findById(id).orElse(null);
-        if(vehiculo != null){
-            String nombreImagen =vehiculo.getUrlImagen();
-            if (nombreImagen != null && !nombreImagen.isEmpty()){
-                // Llama al servicio de subida de archivos para elimar el archivo fidico
-              uploadFileService.delete(nombreImagen);
-            }
-
-            //Eliminar Vehiculo de la base de datos
-            vehiculoRepo.delete(vehiculo);
-        } else {
-            // Manejar la excepción si el vehículo no existe
-            throw new Exception("Vehículo con ID " + id + " no encontrado.");
-        }
+        vehiculoRepo.save(vehiculo); // Se guarda el cambio
     }
 
+    //Metodo para la etimacion de la compra del vehivulo
     public Double estimarPrecioCorregido(double precioBase, long kilometrosActuales, int anioModelo) {
 
         double factorDepreciacionPorKm = 0.000005; // 0.0005% por KM

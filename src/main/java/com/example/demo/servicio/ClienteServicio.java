@@ -12,10 +12,11 @@ public class ClienteServicio {
     @Autowired
     private ClienteRepo clienteRepo;
 
+    //Registra Nuevo Cliente
     public Cliente registrarCliente(Cliente cliente){
         return clienteRepo.save(cliente);
     }
-
+     //Obtiene a un cliente medianre el id
     public Cliente obtenerCliente(int id){
         Cliente cliente = clienteRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
@@ -29,15 +30,16 @@ public class ClienteServicio {
         if (clienteExistenteOpt.isPresent()){
             // Cliente existente, actualizar solo los campos especificados
             Cliente actualizado = clienteExistenteOpt.get();
+            actualizado.setDireccion(cliente.getDireccion());
             actualizado.setCorreo(cliente.getCorreo());
             actualizado.setTelefono(cliente.getTelefono());
             actualizado.setIngresoMensual(cliente.getIngresoMensual());
 
-            // Se guardan los cambios (hace un UPDATE)
+            // Si encuentra el mismo cliente, solo actualiza los campos que no sean unicos
             Cliente clienteGuardado = clienteRepo.save(actualizado);
             return clienteGuardado;
         } else {
-            // Cliente nuevo, registrarlo
+            // Cliente nuevo se registra
             return registrarCliente(cliente);
         }
     }

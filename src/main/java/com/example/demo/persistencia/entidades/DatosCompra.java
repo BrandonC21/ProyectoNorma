@@ -8,6 +8,8 @@ public class DatosCompra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String metodo;
+    //Numero de Tarjeta Unico
+    @Column(nullable = false, unique = true)
     private Long numeroTarjeta;
     private String fecha;
     private int cvs;

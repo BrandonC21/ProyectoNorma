@@ -17,7 +17,7 @@ public class Vendedor {
     private String apellidoP;
     private String apellidoM;
 
-    // El RFC es crucial para identificar al vendedor.
+    // El RFC Dato Unico
     @Column(nullable = false, unique = true)
     private String RFC;
 

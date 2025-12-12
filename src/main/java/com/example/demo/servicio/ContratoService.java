@@ -27,14 +27,10 @@ public class ContratoService {
 
     public static final String VERSION_ACTUAL_ACUERDO = "V1.5"; // Versión para Click-Wrap
 
-    /**
-     * Genera el contrato, valida la versión del acuerdo (Click-Wrap) y lo persiste.
-     */
     public Contrato generarContrato(int clienteId, int vehiculoId, int datosId,String versionAceptada) {
 
         // 1. Validación de Licencia Click-Wrap
         if (!VERSION_ACTUAL_ACUERDO.equals(versionAceptada)) {
-            // Este error previene la creación del contrato si el cliente no aceptó la última versión.
             throw new IllegalStateException("Error legal: Debe aceptar la versión " + VERSION_ACTUAL_ACUERDO + " del acuerdo.");
         }
 
@@ -51,11 +47,12 @@ public class ContratoService {
         contrato.setMetodoPagoUsado(datos);
         contrato.setFechaCelebracion(LocalDate.now());
 
-        // 2. Registro de Cumplimiento Legal (usa la propiedad corregida)
+        //Cumplimiento del clip-Wrap para poder genera los datos del contrato
         contrato.setVersionAcuerdoAceptada(versionAceptada);
 
         return contratoRepository.save(contrato);
     }
+    //Obtiene un contrato mediante el id
     public Contrato obtenerContratoPorId(int id){
         Contrato contrato = contratoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contrato no encontrado"));

@@ -15,7 +15,6 @@ public class Cliente {
     private String nombre;
     private String apellidoP;
     private String apellidoM;
-    //Campos sencibles cifrados en la capa de servicio
     @Column(nullable = false, unique = true)
     private String RFC;
     private String correo;
@@ -119,16 +118,5 @@ public class Cliente {
     public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
-
-    public String desifrado(){
-        String rfc = CifradoUtil.descifrar(getRFC());
-        return rfc;
-    }
-
-
-
-
-
-
 
 }
